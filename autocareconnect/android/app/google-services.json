@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "836543285782",
+    "project_id": "autocare-connect-814ca",
+    "storage_bucket": "autocare-connect-814ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:836543285782:android:4f91bab8004fa93a7d4337",
+        "android_client_info": {
+          "package_name": "com.iturgut.autocareconnect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeL9iorjwcNYaK_9XRCN7W_ylZIlhOPo8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
