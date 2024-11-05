@@ -7,8 +7,8 @@ import 'router.gr.dart';
 import 'pages/home_page.dart'; // HomePage
 import 'pages/login_page.dart'; // LoginPage
 import 'pages/signup_page.dart'; // SignUpPage
-import 'package:camera/camera.dart';
-import 'package:location/location.dart';
+import 'package:camera/camera.dart'; // Camera Functionality
+import 'package:location/location.dart'; // Location Functionality
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
