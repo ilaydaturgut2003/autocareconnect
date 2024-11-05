@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart'; // AutoRoute
 import 'package:firebase_core/firebase_core.dart';
