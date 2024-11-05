@@ -35,64 +35,34 @@ void main() {
       _initializeLocation();
     }
 
-     Future<void> _initializeLocation() async {
-      final location = Location();
-      bool serviceEnabled;
-      PermissionStatus permissionStatus;
+    class LocationManager {
+  Location location = new Location();
+  
+  bool? _serviceEnabled;
+  PermissionStatus? _permissionGranted;
+  LocationData? _locationData;
 
-
-      serviceEnabled = await location.serviceEnabled();
-      if (!serviceEnabled) {
-        serviceEnabled = await location.requestService();
-        if (!serviceEnabled) {
-          return;
-        }
+  Future<void> checkPermissions() async {
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled!) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled!) {
+        return;
       }
-
-
-      permissionStatus = await location.hasPermission();
-      if (permissionStatus == PermissionStatus.denied) {
-        permissionStatus = await location.requestPermission();
-        if (permissionStatus != PermissionStatus.granted) {
-          return;
-        }
-      }
-
-
-      location.onLocationChanged.listen((LocationData newLocation) {
-        setState(() {
-          _locationData = newLocation;
-        });
-      });
     }
 
-    @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Photo & Location App'),
-        ),
-        body: Column(
-          children: [
-            _locationData != null
-                ? Text('Location: ${_locationData!.latitude}, ${_locationData!.longitude}')
-                : Text('Location data not available'),
-
-
-            Expanded(
-              child: ListView.builder(
-                itemCount: _images.length,
-                itemBuilder: (context, index) {
-                  return Image.file(File(_images[index]));
-                },
-              ),
-            ),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _takePhoto,
-          child: Icon(Icons.camera),
-        ),
-      );
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
     }
   }
+    
+  Future<LocationData?> getLocation() async {
+    _locationData = await location.getLocation();
+    return _locationData;
+  }
+}
+  
