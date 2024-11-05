@@ -25,7 +25,6 @@ void main() {
 
   class _MyHomePageState extends State<MyHomePage> {
     CameraController? _cameraController;
-    LocationData? _locationData;
     List<String> _images = [];
 
 
@@ -34,50 +33,37 @@ void main() {
       super.initState();
       _initializeCamera();
     }
+class CameraController {
+  CameraDescription? camera;
+  CameraController? controller;
 
+  Future<void> initializeCamera() async {
+    final cameras = await availableCameras();
+    // Assuming there is at least one camera available
+    camera = cameras.first;
 
-    Future<void> _initializeCamera() async {
-      final cameras = await availableCameras();
-      _cameraController = CameraController(cameras[0], ResolutionPreset.medium);
-      await _cameraController!.initialize();
+    controller = CameraController(
+      camera!,
+      ResolutionPreset.high,
+    );
+
+    await controller!.initialize();
+  }
+
+  Future<void> takePicture(String path) async {
+    if (!controller!.value.isInitialized) {
+      throw 'Camera not initialized';
     }
-
-    Future<void> _takePhoto() async {
-      if (!_cameraController!.value.isInitialized) {
-        return;
-      }
-
-
-      try {
-        final XFile image = await _cameraController!.takePicture();
-        setState(() {
-          _images.add(image.path);
-        });
-      } catch (e) {
-        print('Error taking a photo: $e');
-      }
-    }
-   @override
-    Widget build(BuildContext context) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('Take Picture of your car part'),
-        ),
-    
-            Expanded(
-              child: ListView.builder(
-                itemCount: _images.length,
-                itemBuilder: (context, index) {
-                  return Image.file(File(_images[index]));
-                },
-              ),
-            ),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _takePhoto,
-          child: Icon(Icons.camera),
-        ),
-      );
+    try {
+      await controller!.takePicture(path);
+    } catch (e) {
+      print(e); // Handle errors
     }
   }
+
+  void dispose() {
+    controller?.dispose();
+  }
+}
+
+    
