@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
+import '../app_header.dart';
 
 @RoutePage()
 class ServiceDetailsPage extends StatelessWidget {
@@ -8,6 +9,7 @@ class ServiceDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const AppHeader(),
       body: Center(
         child: Text('Service Details Page'),
       ),
