@@ -43,5 +43,37 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   
   }
+
+class PostListScreen extends StatefulWidget {
+ @override
+ _PostListScreenState createState() => _PostListScreenState();
+}
+class _PostListScreenState extends State<PostListScreen> {
+ List<Post> posts = [];
+ @override
+ void initState() {
+   super.initState();
+   fetchPosts();
+ }
+
+Future<void> fetchPosts() async {
+   final response = await http.get(Uri.parse('https://car-api2.p.rapidapi.com/api/vin/1GTG6CEN0L1139305'));
+   if (response.statusCode == 200) {
+     List jsonResponse = json.decode(response.body);
+     setState(() {
+       posts = jsonResponse.map((data) => Post.fromJson(data)).toList();
+     });
+   } else {
+     throw Exception('Failed to load features');
+   }
+ }
+@override
+ Widget build(BuildContext context) {
+   return Scaffold(
+     appBar: AppBar(
+       title: Text('Parts'),
+     ),
+
+ 
 };
 
