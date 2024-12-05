@@ -62,7 +62,7 @@ class _AuthScreenState    extends State<AuthScreen> {
                 decoration: InputDecoration(labelText: 'Email'),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return 'Please enter    an email';
+                    return 'Please enter an email';
                   }
                   return null;
                 },
