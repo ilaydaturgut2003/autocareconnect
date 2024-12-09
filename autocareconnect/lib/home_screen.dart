@@ -24,14 +24,48 @@ class MainScreen extends StatelessWidget {
           SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              // Navigate to browsing screen
+             title: Text(carList[index].name), // Display car name
+              subtitle: Text('Price: \$${carList[index].price.toString()}'), // Display car price
+              leading: Icon(Icons.directions_car), // Icon for each item
+              onTap: () {
+                // Handle tap event
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
             },
             child: Text('Browse Services'),
           ),
           SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              // Navigate to booking screen
+             if (value == null || value.isEmpty) {
+                    return 'Please enter your car model';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _carModel = value!;
+                },
+              ),
+              SizedBox(height: 16.0),
+              ListTile(
+                title: Text("Select Date: ${_selectedDate.toLocal()}".split(' ')[0]),
+                trailing: Icon(Icons.keyboard_arrow_down),
+                onTap: _pickDate,
+              ),
+              ListTile(
+                title: Text("Select Time: ${_selectedTime.format(context)}"),
+                trailing: Icon(Icons.keyboard_arrow_down),
+                onTap: _pickTime,
+              ),
+              SizedBox(height: 20.0),
+              ElevatedButton(
+                onPressed: _submitForm,
             },
             child: Text('Book a Service'),
           ),
