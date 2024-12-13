@@ -1,8 +1,8 @@
 // home_page.dart
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:autocareconnect/router.gr.dart'; // Import the generated AutoRoute routes
-import '../app_header.dart'; // Import the AppHeader
+import 'package:autocareconnect/router.gr.dart'; 
+import '../app_header.dart'; 
 
 @RoutePage()
 class HomePage extends StatelessWidget {
@@ -11,20 +11,19 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppHeader(), // Use the AppHeader here
+      appBar: const AppHeader(showBackButton: false),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Hero Banner Section
               Container(
                 width: double.infinity,
                 height: 180.0,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/banner.jpg'), // Make sure to add an image asset
+                    image: AssetImage('assets/banner.jpg'), 
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.circular(12.0),

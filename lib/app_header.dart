@@ -4,12 +4,15 @@ import 'package:auto_route/auto_route.dart';
 import 'router.gr.dart'; // Import your generated routes
 
 class AppHeader extends StatelessWidget implements PreferredSizeWidget {
-  const AppHeader({super.key});
+  final bool showBackButton;
+
+  const AppHeader({super.key, this.showBackButton = true});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       title: const Text('AutoCare Connect'),
+      automaticallyImplyLeading: showBackButton,
       actions: [
         IconButton(
           icon: const Icon(Icons.home),
