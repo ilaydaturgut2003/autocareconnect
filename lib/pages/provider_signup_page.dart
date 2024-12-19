@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:auto_route/auto_route.dart';
-import '../router.gr.dart';
 
 @RoutePage()
 class ProviderSignupPage extends StatelessWidget {

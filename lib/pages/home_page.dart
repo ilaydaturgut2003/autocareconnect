@@ -2,7 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:autocareconnect/router.gr.dart'; 
+import 'package:firebase_auth/firebase_auth.dart';
 import '../app_header.dart'; 
+import '../router.gr.dart';
+import '../router.dart';
 
 @RoutePage()
 class HomePage extends StatelessWidget {
@@ -10,6 +13,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       appBar: const AppHeader(showBackButton: false),
       body: SingleChildScrollView(
@@ -22,8 +27,8 @@ class HomePage extends StatelessWidget {
                 width: double.infinity,
                 height: 180.0,
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/banner.jpg'), 
+                  image: const DecorationImage(
+                    image: AssetImage('assets/banner.jpg'),
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.circular(12.0),
@@ -48,7 +53,7 @@ class HomePage extends StatelessWidget {
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Search Services',
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
                 ),
               ),
               const SizedBox(height: 16.0),
@@ -61,49 +66,50 @@ class HomePage extends StatelessWidget {
                     icon: Icons.login,
                     title: 'Login',
                     subtitle: 'Access your account',
-                    route: LoginRoute(),
+                    route: const LoginRoute(),
                   ),
                   _buildNavigationCard(
                     context,
                     icon: Icons.app_registration,
                     title: 'Sign Up',
                     subtitle: 'Create a new account',
-                    route: SignUpRoute(),
+                    route: const SignUpRoute(),
                   ),
                   _buildNavigationCard(
                     context,
                     icon: Icons.person,
                     title: 'My Profile',
                     subtitle: 'View and edit your profile',
-                    route: ProfileRoute(),
+                    route: const ProfileRoute(),
                   ),
                   _buildNavigationCard(
                     context,
                     icon: Icons.car_repair,
                     title: 'Browse Services',
                     subtitle: 'Explore available car services',
-                    route: BrowseServicesRoute(),
+                    route: const BrowseServicesRoute(),
                   ),
                   _buildNavigationCard(
                     context,
                     icon: Icons.book_online,
                     title: 'Book a Service',
                     subtitle: 'Schedule a service appointment',
-                    route: BookingRoute(),
+                    route: const BookingRoute(),
                   ),
-                  _buildNavigationCard(
-                    context,
-                    icon: Icons.dashboard,
-                    title: 'Provider Dashboard',
-                    subtitle: 'Manage your service offerings',
-                    route: ProviderDashboardRoute(),
-                  ),
+                  if (user != null)
+                    _buildNavigationCard(
+                      context,
+                      icon: Icons.dashboard,
+                      title: 'Provider Dashboard',
+                      subtitle: 'Manage your service offerings',
+                      route: ProviderDashboardRoute(userId: user.uid),
+                    ),
                   _buildNavigationCard(
                     context,
                     icon: Icons.help,
                     title: 'Help & Support',
                     subtitle: 'Get assistance and support',
-                    route: HelpSupportRoute(),
+                    route: const HelpSupportRoute(),
                   ),
                 ],
               ),
