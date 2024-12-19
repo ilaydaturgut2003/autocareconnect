@@ -132,7 +132,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 // Sign-Up Button
                 ElevatedButton(
-                  onPressed: _isLoading ? null : _signUp, // Disable button while loading
+                  onPressed: _isLoading ? null : _signUp, 
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blueAccent,
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -157,6 +157,16 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
                 const SizedBox(height: 30),
+
+                Center(
+                  child: TextButton(
+                    onPressed: () => context.pushRoute(ProviderSignupRoute()),
+                    child: const Text(
+                      'Sign in as a Provider',
+                    style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

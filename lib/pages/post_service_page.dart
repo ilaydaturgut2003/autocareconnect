@@ -20,6 +20,31 @@ class _PostServicePageState extends State<PostServicePage> {
   final _costController = TextEditingController();
   String? _location;
   bool _isLoading = false;
+  bool _isAuthorized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAuthorization();
+  }
+
+  Future<void> _checkAuthorization() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      setState(() {
+        _isAuthorized = false;
+      });
+      return;
+    }
+
+    final userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+    final role = userDoc.data()?['role'] ?? 'user';
+
+    setState(() {
+      _isAuthorized = role == 'provider';
+    });
+  }
 
   Future<void> _getCurrentLocation() async {
     try {
@@ -118,6 +143,15 @@ class _PostServicePageState extends State<PostServicePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_isAuthorized) {
+      return Scaffold(
+        appBar: const AppHeader(),
+        body: const Center(
+          child: Text('You do not have permission to post services.'),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: const AppHeader(),
       body: Padding(

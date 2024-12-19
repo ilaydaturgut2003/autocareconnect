@@ -13,32 +13,53 @@ class ProviderDashboardPage extends StatelessWidget {
   const ProviderDashboardPage({super.key, required this.userId});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const AppHeader(),
-      body: DefaultTabController(
-        length: 3,
-        child: Column(
-          children: [
-            const TabBar(
-              tabs: [
-                Tab(text: 'Home'),
-                Tab(text: 'Account History'),
-                Tab(text: 'Service History'),
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  ProviderHomeScreen(userId: userId),
-                  ProviderAccountHistoryScreen(userId: userId),
-                  ProviderServiceHistoryScreen(userId: userId),
+Widget build(BuildContext context) {
+  return FutureBuilder<DocumentSnapshot>(
+    future: FirebaseFirestore.instance.collection('users').doc(userId).get(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        );
+      }
+
+      if (!snapshot.hasData || snapshot.data?['role'] != 'provider') {
+        return Scaffold(
+          appBar: const AppHeader(),
+          body: const Center(
+            child: Text('Access Denied: Only providers can access this page.'),
+          ),
+        );
+      }
+
+      // Provider Dashboard Content
+      return Scaffold(
+        appBar: const AppHeader(),
+        body: DefaultTabController(
+          length: 3,
+          child: Column(
+            children: [
+              const TabBar(
+                tabs: [
+                  Tab(text: 'Home'),
+                  Tab(text: 'Account History'),
+                  Tab(text: 'Service History'),
                 ],
               ),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    ProviderHomeScreen(userId: userId),
+                    ProviderAccountHistoryScreen(userId: userId),
+                    ProviderServiceHistoryScreen(userId: userId),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

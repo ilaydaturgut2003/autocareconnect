@@ -7,9 +7,18 @@ import '../router.gr.dart';
 
 @RoutePage()
 class BookingPage extends StatelessWidget {
-  const BookingPage({super.key});
+  final String serviceId;
+  final String serviceName;
+  final double cost;
 
-  Future<void> _bookService(BuildContext context, Map<String, dynamic> service) async {
+  const BookingPage({
+    super.key,
+    required this.serviceId,
+    required this.serviceName,
+    required this.cost,
+  });
+
+  Future<void> _bookService(BuildContext context) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -21,15 +30,14 @@ class BookingPage extends StatelessWidget {
     try {
       await FirebaseFirestore.instance.collection('bookings').add({
         'user_id': user.uid,
-        'service_id': service['service_id'],
-        'service_name': service['service_name'],
+        'service_id': serviceId,
+        'service_name': serviceName,
         'status': 'pending',
         'booking_date': DateTime.now(),
-        'provider_id': service['provider_id'],
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Successfully booked ${service['service_name']}!')),
+        SnackBar(content: Text('Successfully booked $serviceName!')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -42,38 +50,24 @@ class BookingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AppHeader(),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('services').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No services available for booking.'));
-          }
-
-          final services = snapshot.data!.docs;
-
-          return ListView.builder(
-            itemCount: services.length,
-            itemBuilder: (context, index) {
-              final service = services[index].data() as Map<String, dynamic>;
-
-              return Card(
-                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: ListTile(
-                  title: Text(service['service_name'] ?? 'Unnamed Service'),
-                  subtitle: Text('Cost: \$${service['cost'] ?? 0}'),
-                  trailing: ElevatedButton(
-                    onPressed: () => _bookService(context, service),
-                    child: const Text('Book'),
-                  ),
-                ),
-              );
-            },
-          );
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Service: $serviceName',
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            Text('Cost: \$${cost.toStringAsFixed(2)}'),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _bookService(context),
+              child: const Text('Confirm Booking'),
+            ),
+          ],
+        ),
       ),
     );
   }

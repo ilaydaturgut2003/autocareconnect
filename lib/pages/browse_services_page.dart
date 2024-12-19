@@ -9,30 +9,36 @@ import '../router.gr.dart';
 class BrowseServicesPage extends StatelessWidget {
   const BrowseServicesPage({super.key});
 
-  Future<bool> _isProvider() async {
+  Future<String> _getUserRole() async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return false;
+    if (user == null) {
+      return 'guest';
+    }
 
     final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-    return userDoc.exists && userDoc.data()?['role'] == 'provider';
+    if (userDoc.exists) {
+      final data = userDoc.data() as Map<String, dynamic>?;
+      return data?['role'] ?? 'user';
+    }
+    return 'user';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AppHeader(),
-      body: FutureBuilder<bool>(
-        future: _isProvider(),
+      body: FutureBuilder<String>(
+        future: _getUserRole(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final isProvider = snapshot.data ?? false;
+          final role = snapshot.data ?? 'user';
 
           return Column(
             children: [
-              if (isProvider)
+              if (role == 'provider')
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: ElevatedButton(
@@ -44,7 +50,10 @@ class BrowseServicesPage extends StatelessWidget {
                 ),
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance.collection('services').snapshots(),
+                  stream: FirebaseFirestore.instance
+                      .collection('services')
+                      .where('provider_id', isNotEqualTo: null) // Ensures services are posted by providers
+                      .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
@@ -77,7 +86,7 @@ class BrowseServicesPage extends StatelessWidget {
                                 ),
                                 onTap: () {
                                   context.pushRoute(ServiceDetailsRoute(
-                                    serviceId: services[index].id.toString(),
+                                    serviceId: services[index].id,
                                   ));
                                 },
                               ),
@@ -94,6 +103,24 @@ class BrowseServicesPage extends StatelessWidget {
                                 child: Text(
                                   'Posted by: ${service['provider_name'] ?? 'Unknown'}',
                                   style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    final serviceId = services[index].id;
+                                    final serviceName = service['service_name'] ?? 'Unnamed Service';
+                                    final cost = service['cost'] ?? 0.0;
+
+                                    context.pushRoute(BookingRoute(
+                                      serviceId: serviceId,
+                                      serviceName: serviceName,
+                                      cost: cost,
+                                    ));
+                                  },
+                                  child: const Text('Book This Service'),
                                 ),
                               ),
                               const SizedBox(height: 16),

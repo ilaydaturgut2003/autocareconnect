@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:auto_route/auto_route.dart';
-import '../router.gr.dart';
+import '../app_header.dart';
 
 @RoutePage()
 class ApplicationStatusPage extends StatelessWidget {
@@ -13,8 +13,13 @@ class ApplicationStatusPage extends StatelessWidget {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
-      return const Center(
-        child: Text('Please log in to view your application status.'),
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Application Status'),
+        ),
+        body: const Center(
+          child: Text('Please log in to view your application status.'),
+        ),
       );
     }
 
@@ -34,8 +39,13 @@ class ApplicationStatusPage extends StatelessWidget {
           if (!snapshot.hasData || !snapshot.data!.exists) {
             return Center(
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/provider_signup');
+                onPressed: () async {
+                  await FirebaseFirestore.instance.collection('users').doc(userId).update({
+                    'role': 'applicant',
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Your application has been submitted!')),
+                  );
                 },
                 child: const Text('Apply Now'),
               ),
@@ -43,19 +53,29 @@ class ApplicationStatusPage extends StatelessWidget {
           }
 
           final data = snapshot.data!.data() as Map<String, dynamic>;
-          final role = data['role'] ?? 'applicant';
+          final role = data['role'] ?? 'user';
 
           if (role == 'applicant') {
             return const Center(
-              child: Text('Your application is under review.'),
+              child: Text('Your application is under review. Please check again later.'),
             );
           } else if (role == 'provider') {
             return const Center(
               child: Text('Your application has been approved!'),
             );
           } else if (role == 'user') {
-            return const Center(
-              child: Text('You are currently a regular user.'),
+            return Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  await FirebaseFirestore.instance.collection('users').doc(userId).update({
+                    'role': 'applicant',
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Your application has been submitted!')),
+                  );
+                },
+                child: const Text('Apply to be a Provider'),
+              ),
             );
           } else {
             return const Center(

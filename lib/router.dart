@@ -18,5 +18,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: ProviderSignupRoute.page, path: '/provider_signup'),
     AutoRoute(page: ApplicationStatusRoute.page, path: '/application_status'),
     AutoRoute(page: PostServiceRoute.page, path: '/post_service'),
+    AutoRoute(page: ApplicationRoute.page, path: '/apply_to_be_a_provider'),
   ];
 }
