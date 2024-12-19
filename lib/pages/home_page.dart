@@ -61,20 +61,22 @@ class HomePage extends StatelessWidget {
               // Navigation Cards
               Column(
                 children: [
-                  _buildNavigationCard(
-                    context,
-                    icon: Icons.login,
-                    title: 'Login',
-                    subtitle: 'Access your account',
-                    route: const LoginRoute(),
-                  ),
-                  _buildNavigationCard(
-                    context,
-                    icon: Icons.app_registration,
-                    title: 'Sign Up',
-                    subtitle: 'Create a new account',
-                    route: const SignUpRoute(),
-                  ),
+                  if (user == null) ...[
+                    _buildNavigationCard(
+                      context,
+                      icon: Icons.login,
+                      title: 'Login',
+                      subtitle: 'Access your account',
+                      route: const LoginRoute(),
+                    ),
+                    _buildNavigationCard(
+                      context,
+                      icon: Icons.app_registration,
+                      title: 'Sign Up',
+                      subtitle: 'Create a new account',
+                      route: const SignUpRoute(),
+                    ),
+                  ],
                   _buildNavigationCard(
                     context,
                     icon: Icons.person,

@@ -63,14 +63,41 @@ class BrowseServicesPage extends StatelessWidget {
 
                         return Card(
                           margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                          child: ListTile(
-                            title: Text(service['service_name'] ?? 'Unnamed Service'),
-                            subtitle: Text('Cost: \$${service['cost'] ?? 0}'),
-                            onTap: () {
-                              context.pushRoute(ServiceDetailsRoute(
-                                serviceId: services[index].id.toString(),
-                              ));
-                            },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ListTile(
+                                title: Text(
+                                  service['service_name'] ?? 'Unnamed Service',
+                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Text(
+                                  'Cost: \$${service['cost'] ?? 0}\n'
+                                  'Location: ${service['location'] ?? 'Not provided'}',
+                                ),
+                                onTap: () {
+                                  context.pushRoute(ServiceDetailsRoute(
+                                    serviceId: services[index].id.toString(),
+                                  ));
+                                },
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Text(
+                                  service['description'] ?? 'No description available.',
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Text(
+                                  'Posted by: ${service['provider_name'] ?? 'Unknown'}',
+                                  style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                            ],
                           ),
                         );
                       },

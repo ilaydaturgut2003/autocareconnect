@@ -53,6 +53,10 @@ class ApplicationStatusPage extends StatelessWidget {
             return const Center(
               child: Text('Your application has been approved!'),
             );
+          } else if (role == 'user') {
+            return const Center(
+              child: Text('You are currently a regular user.'),
+            );
           } else {
             return const Center(
               child: Text('Unknown application status.'),

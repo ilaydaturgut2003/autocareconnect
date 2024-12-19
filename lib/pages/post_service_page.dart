@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geolocator/geolocator.dart';
 import '../app_header.dart';
 
 @RoutePage()
@@ -17,11 +18,56 @@ class _PostServicePageState extends State<PostServicePage> {
   final _serviceNameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _costController = TextEditingController();
-  final _locationController = TextEditingController();
+  String? _location;
   bool _isLoading = false;
 
+  Future<void> _getCurrentLocation() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location services are disabled. Please enable them.')),
+        );
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied.')),
+          );
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permissions are permanently denied.')),
+        );
+        return;
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      setState(() {
+        _location = '${position.latitude}, ${position.longitude}';
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch location: $e')),
+      );
+    }
+  }
+
   Future<void> _postService() async {
-    if (_formKey.currentState?.validate() != true) {
+    if (_formKey.currentState?.validate() != true || _location == null) {
+      if (_location == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please fetch the location before posting a service.')),
+        );
+      }
       return;
     }
 
@@ -42,7 +88,7 @@ class _PostServicePageState extends State<PostServicePage> {
         'service_name': _serviceNameController.text.trim(),
         'description': _descriptionController.text.trim(),
         'cost': double.tryParse(_costController.text.trim()) ?? 0,
-        'location': _locationController.text.trim(),
+        'location': _location,
         'provider_id': user.uid,
       });
 
@@ -67,7 +113,6 @@ class _PostServicePageState extends State<PostServicePage> {
     _serviceNameController.dispose();
     _descriptionController.dispose();
     _costController.dispose();
-    _locationController.dispose();
     super.dispose();
   }
 
@@ -133,18 +178,21 @@ class _PostServicePageState extends State<PostServicePage> {
                 },
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _locationController,
-                decoration: const InputDecoration(
-                  labelText: 'Location',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a location.';
-                  }
-                  return null;
-                },
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      _location != null
+                          ? 'Location: $_location'
+                          : 'Location not set. Please fetch location.',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.location_on),
+                    onPressed: _getCurrentLocation,
+                  ),
+                ],
               ),
               const SizedBox(height: 24),
               _isLoading
