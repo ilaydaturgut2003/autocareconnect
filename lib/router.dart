@@ -11,7 +11,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: SignUpRoute.page, path: '/signup'),
     AutoRoute(page: ServiceDetailsRoute.page, path: '/service_details/:serviceID'),
     AutoRoute(page: BrowseServicesRoute.page, path: '/browse_services'),
-    AutoRoute(page: ProfileRoute.page, path: '/myprofile'),
+    AutoRoute(page: ProfileRoute.page, path: '/profile/:providerId'),
     AutoRoute(page: BookingRoute.page, path: '/booking_page'),
     AutoRoute(page: ProviderDashboardRoute.page, path: '/provider_dashboard/:userID'),
     AutoRoute(page: HelpSupportRoute.page, path: '/help_and_support'),
@@ -19,5 +19,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: ApplicationStatusRoute.page, path: '/application_status'),
     AutoRoute(page: PostServiceRoute.page, path: '/post_service'),
     AutoRoute(page: ApplicationRoute.page, path: '/apply_to_be_a_provider'),
+    AutoRoute(page: AdminDashboardRoute.page, path: '/admin_dashboard'),
+    // AutoRoute(page: EditServiceRoute.page, path:'/edit_service/:serviceId'),
   ];
 }

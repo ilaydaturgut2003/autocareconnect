@@ -50,7 +50,7 @@ class _SignUpPageState extends State<SignUpPage> {
           });
 
           // Navigate to ProfilePage on successful sign up
-          context.pushRoute(ProfileRoute());
+          context.pushRoute(ProfileRoute(providerId: user.uid));
         }
       } catch (e) {
         // Display error message if sign-up fails

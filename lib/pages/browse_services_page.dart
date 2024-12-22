@@ -23,6 +23,24 @@ class BrowseServicesPage extends StatelessWidget {
     return 'user';
   }
 
+  Future<void> _deleteService(String serviceId, BuildContext context) async {
+    try {
+      await FirebaseFirestore.instance.collection('services').doc(serviceId).delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Service deleted successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to delete service: $e')),
+      );
+    }
+  }
+
+  Future<void> _editService(String serviceId, BuildContext context) async {
+    // Navigate to a separate Edit Service Page (to be created) with the serviceId
+    context.router.push(ServiceDetailsRoute(serviceId: serviceId)); // Example usage
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,7 +70,7 @@ class BrowseServicesPage extends StatelessWidget {
                 child: StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection('services')
-                      .where('provider_id', isNotEqualTo: null) // Ensures services are posted by providers
+                      .where('provider_id', isNotEqualTo: null)
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -69,63 +87,81 @@ class BrowseServicesPage extends StatelessWidget {
                       itemCount: services.length,
                       itemBuilder: (context, index) {
                         final service = services[index].data() as Map<String, dynamic>;
+                        final providerId = service['provider_id'];
+                        final serviceId = services[index].id;
 
-                        return Card(
-                          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ListTile(
-                                title: Text(
-                                  service['service_name'] ?? 'Unnamed Service',
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                subtitle: Text(
-                                  'Cost: \$${service['cost'] ?? 0}\n'
-                                  'Location: ${service['location'] ?? 'Not provided'}',
-                                ),
-                                onTap: () {
-                                  context.pushRoute(ServiceDetailsRoute(
-                                    serviceId: services[index].id,
-                                  ));
-                                },
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Text(
-                                  service['description'] ?? 'No description available.',
-                                  style: const TextStyle(color: Colors.grey),
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Text(
-                                  'Posted by: ${service['provider_name'] ?? 'Unknown'}',
-                                  style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic),
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    final serviceId = services[index].id;
-                                    final serviceName = service['service_name'] ?? 'Unnamed Service';
-                                    final cost = service['cost'] ?? 0.0;
+                        return FutureBuilder<DocumentSnapshot>(
+                          future: FirebaseFirestore.instance.collection('users').doc(providerId).get(),
+                          builder: (context, providerSnapshot) {
+                            final providerName = (providerSnapshot.hasData && providerSnapshot.data?.data() != null)
+                                ? (providerSnapshot.data!.data() as Map<String, dynamic>)['username'] ?? 'Unknown'
+                                : 'Loading...';
 
-                                    context.pushRoute(BookingRoute(
-                                      serviceId: serviceId,
-                                      serviceName: serviceName,
-                                      cost: cost,
-                                    ));
-                                  },
-                                  child: const Text('Book This Service'),
-                                ),
+                            return Card(
+                              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ListTile(
+                                    title: Text(
+                                      service['service_name'] ?? 'Unnamed Service',
+                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Text(
+                                      'Cost: \$${service['cost'] ?? 0}\n'
+                                      'Location: ${service['location'] ?? 'Not provided'}',
+                                    ),
+                                    onTap: () {
+                                      context.pushRoute(ServiceDetailsRoute(
+                                        serviceId: serviceId,
+                                      ));
+                                    },
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: Text(
+                                      service['description'] ?? 'No description available.',
+                                      style: const TextStyle(color: Colors.grey),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        context.pushRoute(ProfileRoute(
+                                          providerId: providerId,
+                                        ));
+                                      },
+                                      child: Text(
+                                        'Posted by: $providerName',
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          fontStyle: FontStyle.italic,
+                                          color: Colors.blue,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  if (role == 'admin')
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(Icons.edit, color: Colors.blue),
+                                          onPressed: () => _editService(serviceId, context),
+                                        ),
+                                        IconButton(
+                                          icon: const Icon(Icons.delete, color: Colors.red),
+                                          onPressed: () => _deleteService(serviceId, context),
+                                        ),
+                                      ],
+                                    ),
+                                  const SizedBox(height: 16),
+                                ],
                               ),
-                              const SizedBox(height: 16),
-                            ],
-                          ),
+                            );
+                          },
                         );
                       },
                     );

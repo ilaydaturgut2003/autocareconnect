@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
         );
 
         // Navigate to ProfilePage on successful login
-        context.pushRoute(ProfileRoute());
+        context.pushRoute(ProfileRoute(providerId: _auth.currentUser?.uid ?? ''));
       } catch (e) {
         // Display error message if sign-in fails
         ScaffoldMessenger.of(context).showSnackBar(

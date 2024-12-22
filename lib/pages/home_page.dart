@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:autocareconnect/router.gr.dart'; 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // For FirebaseFirestore
-import 'package:auto_route/auto_route.dart'; // For AutoRoute navigation
-import 'package:autocareconnect/router.gr.dart'; // Ensure the route definitions are imported
+import 'package:cloud_firestore/cloud_firestore.dart'; 
+import 'package:auto_route/auto_route.dart'; 
+import 'package:autocareconnect/router.gr.dart'; 
 import '../app_header.dart'; 
 import '../router.gr.dart';
 import '../router.dart';
@@ -116,8 +116,15 @@ class HomePage extends StatelessWidget {
                         subtitle: 'Manage your service offerings',
                         route: ProviderDashboardRoute(userId: user.uid),
                       );
+                    } else if (role == 'admin') {
+                      return _buildNavigationCard(
+                        context,
+                        icon: Icons.admin_panel_settings,
+                        title: 'Admin Dashboard',
+                        subtitle: 'Manage users and applications',
+                        route: const AdminDashboardRoute(),
+                      );
                     }
-
                     return const SizedBox.shrink();
                   },
                 ),
@@ -126,7 +133,7 @@ class HomePage extends StatelessWidget {
                 icon: Icons.person,
                 title: 'My Profile',
                 subtitle: 'View and edit your profile',
-                route: const ProfileRoute(),
+                route: ProfileRoute(providerId: user?.uid ?? ''),
               ),
               _buildNavigationCard(
                 context,
@@ -135,13 +142,6 @@ class HomePage extends StatelessWidget {
                 subtitle: 'Explore available car services',
                 route: const BrowseServicesRoute(),
               ),
-        //       _buildNavigationCard(
-        //         context,
-        //         icon: Icons.book_online,
-        //         title: 'Book a Service',
-        //         subtitle: 'Schedule a service appointment',
-        //         route: const BrowseServicesRoute(),
-        //       ),
               _buildNavigationCard(
                 context,
                 icon: Icons.help,
