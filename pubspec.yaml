@@ -19,7 +19,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   auto_route: ^9.2.2
   camera: ^0.11.0+2
-  location: ^4.3.0
+  location: ^6.0.2
 
 dev_dependencies:
   flutter_test:
