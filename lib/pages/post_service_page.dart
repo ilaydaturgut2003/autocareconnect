@@ -121,7 +121,7 @@ class _PostServicePageState extends State<PostServicePage> {
         const SnackBar(content: Text('Service posted successfully!')),
       );
 
-      Navigator.of(context).pop(); // Go back after successful submission
+      Navigator.of(context).pop();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to post service: $e')),

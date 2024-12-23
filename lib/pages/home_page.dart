@@ -39,7 +39,6 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 16.0),
 
-              // Welcome Text
               const Text(
                 'Welcome to AutoCare Connect!',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -51,7 +50,6 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 16.0),
 
-              // Search Bar
               TextField(
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -61,7 +59,6 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 16.0),
 
-              // Navigation Cards
               if (user == null) ...[
                 _buildNavigationCard(
                   context,
@@ -91,7 +88,6 @@ class HomePage extends StatelessWidget {
                     final data = snapshot.data!.data() as Map<String, dynamic>?;
                     final role = data?['role'] ?? 'user';
 
-                    // Role-Based Navigation
                     if (role == 'user') {
                       return _buildNavigationCard(
                         context,
@@ -156,7 +152,6 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // Helper method to create navigation cards
   Widget _buildNavigationCard(
     BuildContext context, {
     required IconData icon,

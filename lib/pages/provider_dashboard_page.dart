@@ -32,7 +32,6 @@ Widget build(BuildContext context) {
         );
       }
 
-      // Provider Dashboard Content
       return Scaffold(
         appBar: const AppHeader(),
         body: DefaultTabController(

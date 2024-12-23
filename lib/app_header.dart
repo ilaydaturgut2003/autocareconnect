@@ -1,7 +1,6 @@
-// lib/app_header.dart
 import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
-import 'router.gr.dart'; // Import your generated routes
+import 'router.gr.dart'; 
 
 class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   final bool showBackButton;
@@ -17,7 +16,6 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: const Icon(Icons.home),
           onPressed: () {
-            // Navigate to Home Page
             context.pushRoute(HomeRoute());
           },
         ),

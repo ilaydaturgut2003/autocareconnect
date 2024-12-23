@@ -22,7 +22,7 @@ class _EditServicePageState extends State<EditServicePage> {
   late TextEditingController _locationController;
   late TextEditingController _descriptionController;
 
-  bool _isLoading = true; // Track loading state
+  bool _isLoading = true; 
 
   @override
   void initState() {
@@ -41,13 +41,13 @@ class _EditServicePageState extends State<EditServicePage> {
       _descriptionController = TextEditingController(text: data['description']);
 
       setState(() {
-        _isLoading = false; // Set loading to false after initialization
+        _isLoading = false; 
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Failed to load service data: $e'),
       ));
-      Navigator.pop(context); // Navigate back if data loading fails
+      Navigator.pop(context); 
     }
   }
 
@@ -77,7 +77,7 @@ class _EditServicePageState extends State<EditServicePage> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const Scaffold(
-        body: Center(child: CircularProgressIndicator()), // Show loader while loading
+        body: Center(child: CircularProgressIndicator()), 
       );
     }
 

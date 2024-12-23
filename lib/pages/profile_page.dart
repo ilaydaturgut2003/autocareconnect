@@ -74,7 +74,6 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile Header
             Center(
               child: CircleAvatar(
                 radius: 60,
@@ -101,7 +100,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             const SizedBox(height: 16),
 
-            // Account Information Section
             const Text(
               'Account Information:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -142,7 +140,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             const SizedBox(height: 32),
 
-            // Action Buttons
             ElevatedButton(
               onPressed: () async {
                 await _auth.signOut();

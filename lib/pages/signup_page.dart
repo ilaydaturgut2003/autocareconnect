@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:autocareconnect/router.gr.dart'; // Import your generated routes
+import 'package:autocareconnect/router.gr.dart'; 
 import '../app_header.dart';
 
 @RoutePage()
@@ -18,7 +18,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _auth = FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance; // Firestore instance
+  final _firestore = FirebaseFirestore.instance; 
   bool _isLoading = false;
 
   @override
@@ -34,26 +34,22 @@ class _SignUpPageState extends State<SignUpPage> {
         _isLoading = true;
       });
       try {
-        // Create a new user
         UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
           email: _emailController.text,
           password: _passwordController.text,
         );
 
-        // Save additional user data in Firestore
         User? user = userCredential.user;
         if (user != null) {
           await _firestore.collection('users').doc(user.uid).set({
             'email': user.email,
-            'role': 'user', //default role
+            'role': 'user',
             'createdAt': DateTime.now(),
           });
 
-          // Navigate to ProfilePage on successful sign up
           context.pushRoute(ProfileRoute(providerId: user.uid));
         }
       } catch (e) {
-        // Display error message if sign-up fails
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Sign-up failed: ${e.toString()}')),
         );
@@ -78,7 +74,6 @@ class _SignUpPageState extends State<SignUpPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 30),
-                // Title
                 Center(
                   child: Text(
                     'Sign Up',
@@ -90,7 +85,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const SizedBox(height: 30),
 
-                // Email Field
                 TextFormField(
                   controller: _emailController,
                   decoration: const InputDecoration(
@@ -110,7 +104,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const SizedBox(height: 16),
 
-                // Password Field
                 TextFormField(
                   controller: _passwordController,
                   decoration: const InputDecoration(
@@ -130,7 +123,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const SizedBox(height: 24),
 
-                // Sign-Up Button
                 ElevatedButton(
                   onPressed: _isLoading ? null : _signUp, 
                   style: ElevatedButton.styleFrom(
@@ -146,7 +138,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 const SizedBox(height: 16),
 
-                // Navigation to Login Page
                 Center(
                   child: TextButton(
                     onPressed: () => context.pushRoute(LoginRoute()),

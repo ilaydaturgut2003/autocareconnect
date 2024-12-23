@@ -25,7 +25,6 @@ class HelpSupportPage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               
-              // Contact Us Section
               const Text(
                 'Contact Us:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -36,7 +35,6 @@ class HelpSupportPage extends StatelessWidget {
               const Text('Phone: +1 (123) 456-7890'),
               const SizedBox(height: 16),
 
-              // FAQ Section
               const Text(
                 'Frequently Asked Questions (FAQ):',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -68,7 +66,6 @@ class HelpSupportPage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
 
-              // Feedback Form Section
               const Text(
                 'Submit a Request or Feedback:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -84,7 +81,6 @@ class HelpSupportPage extends StatelessWidget {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
-                  // Handle form submission logic here
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Your message has been sent.')),
                   );

@@ -55,7 +55,7 @@ class ProviderSignupForm extends StatelessWidget {
           const SnackBar(content: Text('Application submitted successfully!')),
         );
 
-        Navigator.pop(context); // Return to previous screen
+        Navigator.pop(context);
       }
     }
 
