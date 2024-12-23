@@ -37,8 +37,9 @@ class BrowseServicesPage extends StatelessWidget {
   }
 
   Future<void> _editService(String serviceId, BuildContext context) async {
-    // Navigate to a separate Edit Service Page (to be created) with the serviceId
-    context.router.push(ServiceDetailsRoute(serviceId: serviceId)); // Example usage
+    context.router.push(
+      EditServiceRoute(serviceId: serviceId),
+    );
   }
 
   @override

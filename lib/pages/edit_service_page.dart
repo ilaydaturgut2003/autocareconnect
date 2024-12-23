@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../app_header.dart';
 import '../router.gr.dart';
 
+@RoutePage()
 class EditServicePage extends StatefulWidget {
   final String serviceId;
 
@@ -21,6 +22,8 @@ class _EditServicePageState extends State<EditServicePage> {
   late TextEditingController _locationController;
   late TextEditingController _descriptionController;
 
+  bool _isLoading = true; // Track loading state
+
   @override
   void initState() {
     super.initState();
@@ -28,13 +31,24 @@ class _EditServicePageState extends State<EditServicePage> {
   }
 
   Future<void> _loadServiceData() async {
-    final doc = await FirebaseFirestore.instance.collection('services').doc(widget.serviceId).get();
-    final data = doc.data() as Map<String, dynamic>;
+    try {
+      final doc = await FirebaseFirestore.instance.collection('services').doc(widget.serviceId).get();
+      final data = doc.data() as Map<String, dynamic>;
 
-    _serviceNameController = TextEditingController(text: data['service_name']);
-    _costController = TextEditingController(text: data['cost'].toString());
-    _locationController = TextEditingController(text: data['location']);
-    _descriptionController = TextEditingController(text: data['description']);
+      _serviceNameController = TextEditingController(text: data['service_name']);
+      _costController = TextEditingController(text: data['cost'].toString());
+      _locationController = TextEditingController(text: data['location']);
+      _descriptionController = TextEditingController(text: data['description']);
+
+      setState(() {
+        _isLoading = false; // Set loading to false after initialization
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Failed to load service data: $e'),
+      ));
+      Navigator.pop(context); // Navigate back if data loading fails
+    }
   }
 
   Future<void> _updateService() async {
@@ -61,6 +75,12 @@ class _EditServicePageState extends State<EditServicePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()), // Show loader while loading
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text('Edit Service')),
       body: Padding(

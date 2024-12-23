@@ -20,6 +20,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: PostServiceRoute.page, path: '/post_service'),
     AutoRoute(page: ApplicationRoute.page, path: '/apply_to_be_a_provider'),
     AutoRoute(page: AdminDashboardRoute.page, path: '/admin_dashboard'),
-    // AutoRoute(page: EditServiceRoute.page, path:'/edit_service/:serviceId'),
+    AutoRoute(page: EditServiceRoute.page, path:'/edit_service/:serviceId'),
   ];
 }
